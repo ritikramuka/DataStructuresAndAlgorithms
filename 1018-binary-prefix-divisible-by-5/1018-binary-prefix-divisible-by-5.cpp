@@ -14,7 +14,7 @@ public:
             else
                 ans.push_back(false);
             
-            n %= 5;
+            n %= 10;
         }
         return ans;
     }
