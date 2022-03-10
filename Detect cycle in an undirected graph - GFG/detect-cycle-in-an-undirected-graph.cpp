@@ -7,29 +7,45 @@ class Solution {
   public:
     // Function to detect cycle in an undirected graph.
     
-    bool findCycle(int vtx, vector<bool>& vis, vector<int> adj[]) {
-        queue<pair<int, int>> que;
-        que.push({vtx, -1});
-        vis[vtx] = true;
+    // bfs
+    // bool findCycleBFS(int vtx, vector<bool>& vis, vector<int> adj[]) {
+    //     queue<pair<int, int>> que;
+    //     que.push({vtx, -1});
+    //     vis[vtx] = true;
         
-        while(que.size()) {
-            int node = que.front().first;
-            int parent = que.front().second;
-            que.pop();
+    //     while(que.size()) {
+    //         int node = que.front().first;
+    //         int parent = que.front().second;
+    //         que.pop();
             
-            for(int i : adj[node]) {
-                if(vis[i] == true) {
-                    if(i != parent) {
-                        return true;
-                    }
-                }
-                else {
-                    vis[i] = true;
-                    que.push({i, node});
-                }
+    //         for(int i : adj[node]) {
+    //             if(vis[i] == true) {
+    //                 if(i != parent) {
+    //                     return true;
+    //                 }
+    //             }
+    //             else {
+    //                 vis[i] = true;
+    //                 que.push({i, node});
+    //             }
+    //         }
+    //     }
+        
+    //     return false;
+    // }
+    
+    
+    // dfs
+    bool findCycleDFS(int vtx, int parent, vector<bool>& vis, vector<int> adj[]) {
+        vis[vtx] = true;
+        for(int i : adj[vtx]) {
+            if(vis[i] == true) {
+                if(i != parent)
+                    return true;
+            } else if(findCycleDFS(i, vtx, vis, adj) == true) {
+                return true;
             }
         }
-        
         return false;
     }
     
@@ -39,7 +55,9 @@ class Solution {
         
         for(int i = 0; i < V; i++) {
             if(vis[i] == false) {
-                if(findCycle(i, vis, adj) == true)
+                // if(findCycleBFS(i, vis, adj) == true)
+                //     return true;
+                if(findCycleDFS(i, -1, vis, adj) == true)
                     return true;
             }
         }
