@@ -26,22 +26,18 @@ class Solution {
         while(que.size() != 0) {
             int size = que.size();
             List<Integer> currLevel = new ArrayList<>();
-            for (int i = 0; i < size; i++) {
-                currLevel.add(0);
-            }
             for(int i = 0; i < size; i++) {
                 TreeNode rnode = que.remove();
-                if(leftToRight == true) {
-                    currLevel.set(i, rnode.val);
-                } else {
-                    currLevel.set(size - 1 - i, rnode.val);
-                }
+                currLevel.add(rnode.val);
                 if(rnode.left != null) {
                     que.add(rnode.left);
                 } 
                 if(rnode.right != null) {
                     que.add(rnode.right);
                 }
+            }
+            if(leftToRight == false) {
+                Collections.reverse(currLevel);
             }
             leftToRight = !leftToRight;
             ans.add(currLevel);
