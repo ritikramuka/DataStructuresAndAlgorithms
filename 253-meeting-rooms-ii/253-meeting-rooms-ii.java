@@ -1,21 +1,15 @@
 class Solution {
-public:
-    int minMeetingRooms(vector<vector<int>>& intervals) {
-        sort(intervals.begin(), intervals.end());
-        vector<int> rooms(1, -1);
-        for(int i = 0; i < intervals.size(); i++) {
-            int idx = -1;
-            for(int j = 0; j < rooms.size(); j++) {
-                if(rooms[j] <= intervals[i][0]) {
-                    idx = j;
-                }
+    public int minMeetingRooms(int[][] intervals) {
+        Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+        PriorityQueue<Integer> pq = new PriorityQueue();
+        int maxCnt = 0;
+        for(int[] interval : intervals) {
+            while (!pq.isEmpty() && interval[0] >= pq.peek()) {
+                pq.remove();
             }
-            if(idx == -1)
-                rooms.push_back(intervals[i][1]);
-            else 
-                rooms[idx] = intervals[i][1];
+            pq.add(interval[1]);
+            maxCnt = Math.max(maxCnt, (int)pq.size());
         }
-        
-        return rooms.size();
+        return maxCnt;
     }
-};
+}
