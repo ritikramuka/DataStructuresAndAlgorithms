@@ -25,7 +25,6 @@ class Solution {
         int pathFromRight = pathSum(root.right);
         int pathFromLeftIncludingRoot = pathFromLeft + root.val;
         int pathFromRightIncludingRoot = pathFromRight + root.val;
-        int bestIncludingRoot = Math.max(pathFromRightIncludingRoot, pathFromLeftIncludingRoot);
         int allPath = pathFromLeft + pathFromRight + root.val;
         maxPathSum = Math.max(maxPathSum, Math.max(root.val, Math.max(allPath, Math.max(pathFromRightIncludingRoot, pathFromLeftIncludingRoot))));
         
