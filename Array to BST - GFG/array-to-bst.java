@@ -33,50 +33,25 @@ class GFG
 
 class Solution
 {
-    class Node {
-        int data;
-        Node left;
-        Node right;
-        
-        Node() {}
-        Node(int data) {
-            this.data = data;
-            this.left = null;
-            this.right = null;
-        }
-    }
     
-    public Node construct(int[] arr, int lo, int hi) {
+    public void construct(int[] arr, int lo, int hi, int[] pre) {
         if(lo > hi) 
-            return null;
+            return;
         
         int mid = lo + (hi - lo) / 2;
-        Node node = new Node(arr[mid]);
-        
-        node.left = construct(arr, lo, mid - 1);
-        node.right = construct(arr, mid + 1, hi);
-        
-        return node;
+        pre[idx] = arr[mid];
+        idx++;
+        construct(arr, lo, mid - 1, pre);
+        construct(arr, mid + 1, hi, pre);
     }
     
     int idx = 0;
-    public void preorder(Node root, int[] pre) {
-        if(root == null) {
-            return;
-        }
-        
-        pre[idx] = root.data;
-        idx++;
-        preorder(root.left, pre);
-        preorder(root.right, pre);
-    }
     
     public int[] sortedArrayToBST(int[] nums)
     {
         // Code here 
-        Node root = construct(nums, 0, nums.length - 1);
         int[] pre = new int[nums.length];
-        preorder(root, pre);
+        construct(nums, 0, nums.length - 1, pre);
         return pre;
     }
 }
