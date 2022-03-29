@@ -32,15 +32,26 @@ public:
         // return memo(nums, 0, dp);
         
         // tabulation
+        // int n = nums.size();
+        // if(n == 1) return nums[0]; 
+        // vector<int> dp(n, 0);
+        // dp[n - 1] = nums[n - 1];
+        // dp[n - 2] = max(nums[n - 2], dp[n - 1]);
+        // for(int i = n - 3; i >= 0; i--) {
+        //     dp[i] = max(dp[i + 1], dp[i + 2] + nums[i]);
+        // }
+        // return dp[0];
+        
+        // space optimization
         int n = nums.size();
         if(n == 1) return nums[0]; 
-        vector<int> dp(n, 0);
-        dp[n - 1] = nums[n - 1];
-        dp[n - 2] = max(nums[n - 2], dp[n - 1]);
+        int a = nums[n - 1];
+        int b = max(nums[n - 2], a);
         for(int i = n - 3; i >= 0; i--) {
-            dp[i] = max(dp[i + 1], dp[i + 2] + nums[i]);
+            int curr = max(b, a + nums[i]);
+            a = b;
+            b = curr;
         }
-        
-        return dp[0];
+        return b;
     }
 };
