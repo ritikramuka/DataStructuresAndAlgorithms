@@ -14,28 +14,32 @@
  * }
  */
 class Solution {
-    StringBuilder sb = new StringBuilder();
-    public String tree2str(TreeNode root) {
+    StringBuilder ans;
+    public void help(TreeNode root) {
         if(root == null) {
-            return "";
+            return;
         }
         
-        sb.append(root.val);
+        ans.append(root.val);
+        
         if(root.left != null) {
-            sb.append('(');
-            tree2str(root.left);
-            sb.append(')');
+            ans.append('(');
+            help(root.left);
+            ans.append(')');
         } else if(root.right != null) {
-            sb.append('(');
-            sb.append(')'); 
+            ans.append('(');
+            ans.append(')');
         }
         
         if(root.right != null) {
-            sb.append('(');
-            tree2str(root.right);
-            sb.append(')');
+            ans.append('(');
+            help(root.right);
+            ans.append(')');
         }
-        
-        return sb.toString();
+    }
+    public String tree2str(TreeNode root) {
+        ans = new StringBuilder();
+        help(root);
+        return ans.toString();
     }
 }
