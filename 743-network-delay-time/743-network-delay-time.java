@@ -14,7 +14,7 @@ class Solution {
     }
     
     public int networkDelayTime(int[][] times, int n, int k) {
-        ArrayList<Pair>[] adj = new ArrayList[n + 1];
+        List<Pair>[] adj = new ArrayList[n + 1];
         for(int i = 0; i < n + 1; i++) {
             adj[i] = new ArrayList<Pair>();
         }
