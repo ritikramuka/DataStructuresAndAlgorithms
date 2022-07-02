@@ -2,7 +2,7 @@ class MapSum {
 public:
     class Trie {
         public:
-            Trie *childs[26];
+            Trie* childs[26];
             int val;
             unordered_map<string, int> valMap;
             Trie() {
