@@ -18,6 +18,13 @@ public:
     int numEnclaves(vector<vector<int>>& grid) {
         n = grid.size();
         m = grid[0].size();
+        int ans = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(grid[i][j] == 1) ans++;
+            }
+        }
+        
         for(int i = 0; i < n; i++) {
             if(grid[i][0] == 1) {
                 dfs_closeIsland(grid, i, 0);
@@ -34,17 +41,6 @@ public:
                 dfs_closeIsland(grid, n - 1, j);
             }
         }
-        
-        int ans = 0;
-        for(int i = 1; i < n - 1; i++) {
-            for(int j = 1; j < m - 1; j++) {
-                if(grid[i][j] == 1) {
-                    cnt = 0;
-                    dfs_closeIsland(grid, i, j);
-                    ans += cnt;
-                }
-            }
-        }
-        return ans;
+        return ans - cnt;
     }
 };
