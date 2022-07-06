@@ -4,7 +4,6 @@ public:
         if(connections.size() < n - 1) return -1;
         vector<int> parent(n);
         vector<int> rank(n);
-        int numOfComp = 0;
         for(int i = 0; i < n; i++) parent[i] = i;
         for(vector<int>& connection : connections) {
             int u = connection[0];
@@ -15,9 +14,12 @@ public:
             if(rank[pu] > rank[pv]) parent[pv] = pu;
             else if(rank[pv] < rank[pu]) parent[pu] = pv;
             else { parent[pv] = pu; rank[pu]++; }
-            numOfComp++;
         }
-        return n - numOfComp - 1;
+        int numOfComp = 0;
+        for(int i = 0; i < n; i++) {
+            if(find(parent, i) == i) numOfComp++;
+        }
+        return numOfComp - 1;
     }
     
     int find(vector<int>& parent, int x) {
