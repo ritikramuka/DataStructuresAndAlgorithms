@@ -22,7 +22,7 @@ public:
             while(size-->0) {
                 TreeNode* rnode = que.front();
                 que.pop();
-                currLevel.push_back(rnode->val);
+                currLevel.emplace_back(rnode->val);
                 if(rnode->left != nullptr) {
                     que.push(rnode->left);
                 }
@@ -30,7 +30,7 @@ public:
                     que.push(rnode->right);
                 }
             }
-            lo.push_back(currLevel);
+            lo.emplace_back(currLevel);
         }
         return lo;
     }
