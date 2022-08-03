@@ -6,7 +6,7 @@ class Solution {
             int currDiff = arr[i + 1] - arr[i];
             if(currDiff != diff) {
                 return false;
-            }
+            } 
         }
         return true;
     }
