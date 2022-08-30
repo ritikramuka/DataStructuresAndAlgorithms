@@ -15,16 +15,16 @@
  */
 class Solution {
     
-    private int leftMin = Integer.MAX_VALUE;
-    private int rightMax = Integer.MIN_VALUE;
-    private void findWidth(TreeNode root, int left, int right) {
+    private int minLevel = 0;
+    private int maxLevel = 0;
+    private void findLevel(TreeNode root, int level) {
         if(root == null) return;
         
-        findWidth(root.left, left - 1, right - 1);
-        findWidth(root.right, left + 1, right + 1);
+        findLevel(root.left, level - 1);
+        findLevel(root.right, level + 1);
         
-        leftMin = Math.min(leftMin, left);
-        rightMax = Math.max(rightMax, right);
+        minLevel = Math.min(minLevel, level);
+        maxLevel = Math.max(maxLevel, level);
     }
     
     private class Pair implements Comparable<Pair> {
@@ -46,34 +46,25 @@ class Solution {
     }
     
     public List<List<Integer>> verticalTraversal(TreeNode root) {
-        findWidth(root, 0, 0);
-        int width = rightMax - leftMin + 1;
+        findLevel(root, 0);
+        int width = Math.abs(minLevel) + 1 + Math.abs(maxLevel);
         
-        List<List<Integer>> vo = new ArrayList<>();
-        for(int i = 0; i < width; i++) vo.add(new ArrayList<>());
+        List<List<Integer>> vo = new ArrayList();
+        for(int i = 0; i < width; i++) vo.add(new ArrayList());
         
         PriorityQueue<Pair> pQue = new PriorityQueue<>();
-        PriorityQueue<Pair> cQue = new PriorityQueue<>();
-        pQue.add(new Pair(root, -leftMin));
-       
-        while(pQue.size() != 0) {    
+                                                       
+        pQue.add(new Pair(root, Math.abs(minLevel)));
+        while(pQue.isEmpty() == false) {
             int size = pQue.size();
+            PriorityQueue<Pair> cQue = new PriorityQueue<>();
             while(size-->0) {
                 Pair rp = pQue.poll();
                 vo.get(rp.level).add(rp.node.val);
-                
-                if(rp.node.left != null) {
-                    cQue.add(new Pair(rp.node.left, rp.level - 1));
-                }
-                
-                if(rp.node.right != null) {
-                    cQue.add(new Pair(rp.node.right, rp.level + 1));
-                }
+                if(rp.node.left != null) cQue.add(new Pair(rp.node.left, rp.level - 1));
+                if(rp.node.right != null) cQue.add(new Pair(rp.node.right, rp.level + 1));
             }
-            
-            PriorityQueue<Pair> temp = cQue;
-            cQue = new PriorityQueue<>();
-            pQue = temp;
+            pQue = cQue;
         }
         
         return vo;
