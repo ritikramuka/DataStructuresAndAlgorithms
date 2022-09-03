@@ -1,5 +1,5 @@
 class Solution {
-    private HashSet<Integer> ans;
+    private ArrayList<Integer> ans;
     
     private void dfs(ArrayList<Integer>[] numberMapping, int i, int n, int num) {
         if(n == 0) {
@@ -20,18 +20,17 @@ class Solution {
             int prevCons = i - k;
             int nextCons = i + k;
             if(prevCons >= 0) numberMapping[i].add(prevCons);
-            if(nextCons < 10) numberMapping[i].add(nextCons);
+            if(nextCons < 10 && nextCons != i) numberMapping[i].add(nextCons);
         }
         
-        ans = new HashSet();
+        ans = new ArrayList();
         for(int i = 1; i < 10; i++) {
             dfs(numberMapping, i, n - 1, i);
         }
         
         int[] sol = new int[ans.size()];
-        int itr = 0;
-        for(int i : ans) {
-            sol[itr++] = i;
+        for(int i = 0; i < ans.size(); i++) {
+            sol[i] = ans.get(i);
         }
         
         return sol;
