@@ -3,7 +3,8 @@ class Solution {
         char[] arr = new char[s.length()];
         for(int i = 0; i < indices.length; i++) {
             int idx = indices[i];
-            arr[idx] = s.charAt(i);
+            char ch = s.charAt(i);
+            arr[idx] = ch;
         }
         String ans = new String(arr);
         return ans;
