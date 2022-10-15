@@ -1,57 +1,58 @@
 class Solution {
-    private int n, m;
-    
-    private void swap(int[][] matrix, int x1, int y1, int x2, int y2) {
-        int temp = matrix[x1][y1];
-        matrix[x1][y1] = matrix[x2][y2];
-        matrix[x2][y2] = temp;
-    }
-
-    private void transpose(int[][] matrix) {
-        for (int r = 0; r < n; r++) {
-            for (int c = 0; c < r; c++) {
-                swap(matrix, r, c, c, r);
+    public boolean areEquals (int[][] arr1, int[][] arr2) {
+        int n = arr1.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (arr1[i][j] != arr2[i][j]) {
+                    return false;
+                }
             }
         }
-    }
-
-    private void swapColumns(int[][] matrix, int col1, int col2) {
-        for (int r = 0; r < n; r++) {
-            swap(matrix, r, col1, r, col2);
-        }
-    }
-
-    private void swapComplementaryColumns(int[][] matrix) {
-        int columnIndex = 0;
-        int complementaryColumnIndex = (m - 1) - columnIndex;
-        while (columnIndex < complementaryColumnIndex) {
-            swapColumns(matrix, columnIndex, complementaryColumnIndex);
-            columnIndex++;
-            complementaryColumnIndex--;
-        }
-    }
-
-    public void rotate(int[][] matrix) {
-        transpose(matrix);
-        swapComplementaryColumns(matrix);
+        return true;
     }
     
-    
+    public void RotateMat (int[][] mat) {
+        int n = mat.length;
+        
+        // transpose
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                // swap
+                int temp = mat[i][j];
+                mat[i][j] = mat[j][i];
+                mat[j][i] = temp;
+            }
+        }
+        
+        // swap comp cols
+        for (int c = 0; c < n / 2; c++) {
+            int cc = n - 1 - c;
+            for (int r = 0; r < n; r++) {
+                int temp = mat[r][c];
+                mat[r][c] = mat[r][cc];
+                mat[r][cc] = temp;    
+            }
+        }
+        
+        // mat -> is rotated??
+    }
+     
     public boolean findRotation(int[][] mat, int[][] target) {
-        n = mat.length;
-        m = mat.length;
+        int n = mat.length;
         
-        if (Arrays.deepEquals(target, mat)) {
-            return true;
-        }
-        
-        int deg = 3;
-        while (deg--> 0) {
-            rotate(mat);
-            if (Arrays.deepEquals(target, mat)) {
+        int rotations = 4;
+        while (rotations > 0) {
+            
+            // will rotate by 90 clockwise
+            RotateMat (mat);
+            
+            if (Arrays.deepEquals(mat, target) == true) {
                 return true;
             }
+            
+            rotations--;
         }
+        
         return false;
     }
 }
