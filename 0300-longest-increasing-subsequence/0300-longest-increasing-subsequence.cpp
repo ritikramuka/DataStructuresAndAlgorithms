@@ -3,17 +3,16 @@ public:
     int lengthOfLIS(vector<int>& nums) {
         int n = nums.size();
         
-        vector<int> dp (n, 1);
-        int maxLen = 0;
+        vector<int> temp;
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < i; j++) {
-                if (nums[j] < nums[i]) {
-                    dp[i] = max(dp[i], dp[j] + 1);
-                }
+            int idx = lower_bound(temp.begin(), temp.end(), nums[i]) - temp.begin();
+            if (idx == temp.size()) {
+                temp.push_back(nums[i]);
+            } else {
+                temp[idx] = nums[i];
             }
-            maxLen = max(maxLen, dp[i]);
         }
         
-        return maxLen;
+        return temp.size();
     }
 };
