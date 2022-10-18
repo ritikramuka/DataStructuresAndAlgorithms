@@ -12,7 +12,6 @@ public:
             } else {
                 currSum = sum;
             }
-            
             maxSum = max(maxSum, currSum);
         }
         
