@@ -12,16 +12,16 @@ public:
         for (int i = 0; i < n; i++) {
             dp[i] = cuboids[i][2];
         }
-        int maxStackHeight = dp[0];
+        int maxHeight = cuboids[0][2];
         for (int i = 1; i < n; i++) {
             for (int j = 0; j < i; j++) {
-                if (cuboids[j][0] <= cuboids[i][0] && cuboids[j][2] <= cuboids[i][2] && cuboids[j][1] <= cuboids[i][1]) {
+                if (cuboids[j][0] <= cuboids[i][0] and cuboids[j][1] <= cuboids[i][1] and cuboids[j][2] <= cuboids[i][2]) {
                     dp[i] = max(dp[i], dp[j] + cuboids[i][2]);
                 }
             }
-            maxStackHeight = max(maxStackHeight, dp[i]);
+            maxHeight = max(maxHeight, dp[i]);
         }
         
-        return maxStackHeight;
+        return maxHeight;
     }
 };
