@@ -2,18 +2,20 @@ class Solution {
 public:
     vector<int> findErrorNums(vector<int>& nums) {
         int n = nums.size();
-        vector<int> occ (n, 0);
-        for (int i = 0; i < n; i++) {
-            occ[nums[i] - 1]++;
+        int xor1 = 0;
+        for (int i = 1; i <= n; i++) {
+            xor1 ^= i;
         }
-        int missingNum, occTwice;
+        int occTwice = 1;
         for (int i = 0; i < n; i++) {
-            if (occ[i] == 0) {
-                missingNum = i + 1;
-            } else if (occ[i] == 2) {
-                occTwice = i + 1;
+            int num = abs(nums[i]);
+            xor1 ^= num;
+            if (nums[num - 1] > 0) {
+                nums[num - 1] = -nums[num - 1];
+            } else {
+                occTwice = num;
             }
         }
-        return {occTwice, missingNum};
+        return {occTwice, xor1 ^ occTwice};
     }
 };
