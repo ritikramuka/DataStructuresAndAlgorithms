@@ -4,7 +4,7 @@ private:
     int score;
 
 public:
-    Location (string name, int score) {
+    Location (string& name, int score) {
         this->name = name;
         this->score = score;
     }
@@ -20,7 +20,7 @@ public:
 
 class MaxHeapComp {
 public:
-    bool operator() (Location* a, Location* b) {
+    bool operator() (Location*& a, Location*& b) {
         if (a->getScore() == b->getScore()) {
             return a->getName() > b->getName();
         }  
@@ -30,7 +30,7 @@ public:
 
 class MinHeapComp {
 public:
-    bool operator() (Location* a, Location* b) {
+    bool operator() (Location*& a, Location*& b) {
         if (a->getScore() == b->getScore()) {
             return a->getName() < b->getName();
         }  
