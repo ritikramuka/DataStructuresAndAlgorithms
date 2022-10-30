@@ -31,8 +31,8 @@ public:
             if (maxHeap.size() < k) {
                 maxHeap.push(workers[i]->quality);
                 q += workers[i]->quality;
-            }else if (maxHeap.size() == k) {
-                if(maxHeap.top() > workers[i]->quality) {
+            } else if (maxHeap.size() == k) {
+                if (maxHeap.top() > workers[i]->quality) {
                     q -= maxHeap.top();
                     maxHeap.pop();
 
@@ -40,6 +40,7 @@ public:
                     q += workers[i]->quality;
                 }
             }
+            
             if (maxHeap.size() == k) {
                 double cost = q * workers[i]->ratio;
                 if (ans > cost) ans = cost;
