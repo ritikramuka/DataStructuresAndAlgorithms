@@ -107,19 +107,27 @@ struct Node
 class Solution
 {
     public: 
-    Node * head = nullptr;
-    Node * prev = nullptr;
     
-    void bToDLL_(Node * root) 
+    // head for DLL
+    Node* head = nullptr;
+    // prev element in DLL
+    Node* prev = nullptr;
+    
+    void helper (Node *root) 
     {
-        if (root == nullptr) return;
-        
-        bToDLL_(root->left);
-        
-        if (prev == nullptr) 
+        if (root == nullptr) 
         {
-            head = root;    
-        } 
+            return;
+        }
+        
+        // left call
+        helper (root->left);
+        
+        // in order
+        if (head == nullptr) 
+        {
+            head = root;
+        }
         else 
         {
             prev->right = root;
@@ -127,14 +135,16 @@ class Solution
         }
         prev = root;
         
-        bToDLL_(root->right);
+        //right call
+        helper (root->right);
     }
     
     //Function to convert binary tree to doubly linked list and return it.
     Node * bToDLL(Node *root)
     {
         // your code here
-        bToDLL_(root);
+        helper (root);
+        
         return head;
     }
 };
