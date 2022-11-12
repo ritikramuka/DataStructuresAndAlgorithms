@@ -14,7 +14,7 @@ class Solution {
         while (n != 0) {
             int digit = n % 10;
             n = n / 10;
-            armstrongSum += (digit * digit * digit);
+            armstrongSum += pow(digit, 3);
         }
         return armstrongSum == orignalNumber ? "Yes" : "No";
     }
