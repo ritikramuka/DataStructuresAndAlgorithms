@@ -34,8 +34,8 @@ class GFG {
 class Solution 
 {
     public static boolean possibleToPlace(int[] A, int B, long cap) {
-        long stud = 1;
-        long currPagesCount = 0;
+        int stud = 1;
+        int currPagesCount = 0;
         for (int i = 0; i < A.length; i++) {
             if (currPagesCount + A[i] <= cap) {
                 currPagesCount += A[i];
