@@ -14,23 +14,23 @@
  * }
  */
 class Solution {
-    public void inorderTraversal_ (TreeNode root, List<Integer> in) {
+    public void ioTraversal(TreeNode root, List<Integer> ans) {
         if (root == null) {
             return;
         }
         
-        inorderTraversal_ (root.left, in);
+        ioTraversal(root.left, ans);
         
-        in.add (root.val);
+        ans.add(root.val);
         
-        inorderTraversal_ (root.right, in);
-        
-        return;
+        ioTraversal(root.right, ans);
     }
     
-    public List<Integer> inorderTraversal (TreeNode root) {
-        List<Integer> in = new ArrayList<>();
-        inorderTraversal_ (root, in);
-        return in;
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        
+        ioTraversal (root, ans);
+        
+        return ans;
     }
 }
