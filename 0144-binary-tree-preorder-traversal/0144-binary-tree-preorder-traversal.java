@@ -14,45 +14,24 @@
  * }
  */
 class Solution {
-    class Node {
-        TreeNode node;
-        int calls;
+    public void poTraversal (TreeNode root,  List<Integer> ans) {
+        if (root == null) return;
         
-        Node(TreeNode node) {
-            this.node = node;
-            this.calls = 0;
-        }
+//         add my self
+        ans.add(root.val);
+        
+//         call for left
+        poTraversal (root.left, ans);
+        
+//         call for right
+        poTraversal (root.right, ans);
     }
     
     public List<Integer> preorderTraversal(TreeNode root) {
-        List<Integer> pre = new ArrayList<>();
+        List<Integer> ans = new ArrayList<>();
         
-        if (root == null) {
-            return pre;
-        }
+        poTraversal (root, ans);
         
-        Stack<Node> st = new Stack<>();
-        st.push(new Node(root));
-        
-        while (st.size() != 0) {
-            Node top = st.peek();
-            if (top.calls == 0) {
-                pre.add(top.node.val);
-            }
-            
-            if (top.calls < 1 && top.node.left != null) {
-                Node left = new Node(top.node.left);
-                top.calls = 1;
-                st.push(left);
-            } else if (top.calls < 2 && top.node.right != null) {
-                Node right = new Node(top.node.right);
-                top.calls = 2;
-                st.push(right);
-            } else {
-                st.pop();
-            }
-        }
-        
-        return pre;
+        return ans;
     }
 }
