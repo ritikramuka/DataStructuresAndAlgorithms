@@ -35,14 +35,12 @@ class Solution {
         Pair leftSum = pathSum(root.left);
         Pair rightSum = pathSum(root.right);
         
-        int leftPathIncRoot = leftSum.sum + root.val;
-        int rightPathIncRoot = rightSum.sum + root.val;
-        int leftRightRootPathSum = leftSum.sum + root.val + rightSum.sum;
-        int rootVal = root.val;
-        int currMaxPathSum = Math.max(Math.max(rootVal, leftRightRootPathSum), Math.max(leftPathIncRoot, rightPathIncRoot));
+        int leftPath = Math.max(leftSum.sum, 0);
+        int rightPath = Math.max(rightSum.sum, 0);
+        int currMaxPathSum = leftPath + root.val + rightPath;
         
         int overallMaxPathSum = Math.max(currMaxPathSum, Math.max(leftSum.maxPathSum, rightSum.maxPathSum));
-        Pair rootPair = new Pair(Math.max(root.val, Math.max(leftPathIncRoot, rightPathIncRoot)), overallMaxPathSum);
+        Pair rootPair = new Pair(Math.max(leftPath + root.val, rightPath + root.val), overallMaxPathSum);
         return rootPair;
     }
     
