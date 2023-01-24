@@ -1,4 +1,4 @@
-// { Driver Code Starts
+//{ Driver Code Starts
 import java.io.*;
 import java.util.*;
 
@@ -89,6 +89,7 @@ class GFG
         }
     }
 }
+
 // } Driver Code Ends
 
 
@@ -108,88 +109,81 @@ class GFG
 
 class Solution
 {
-    void leftMost(Node node, ArrayList<Integer> lm) {
-        if(node == null) {
+    void leftBoundry(Node node, ArrayList<Integer> lb) {
+        if (node == null) {
             return;
         }
         
-        if(node.left == null && node.right == null) {
-            return;
-        }
-        
-        lm.add(node.data);
-        if(node.left != null) {
-            leftMost(node.left, lm);
+        if (node.left == null && node.right == null) {
+            
         } else {
-            leftMost(node.right, lm);
+            lb.add(node.data);   
+        }
+        
+        if (node.left != null) {
+            leftBoundry(node.left, lb);
+        } else {
+            leftBoundry(node.right, lb);
         }
         
         return;
     }
     
-    void leafNode(Node node, ArrayList<Integer> ln) {
-        if(node == null) {
+    void leafNodes(Node node, ArrayList<Integer> ln) {
+        if (node == null) {
             return;
         }
         
-        if(node.left == null && node.right == null) {
+        if (node.left == null && node.right == null) {
             ln.add(node.data);
-            return;
         }
         
-        leafNode(node.left, ln);
-        leafNode(node.right, ln);
+        leafNodes(node.left, ln);
+        leafNodes(node.right, ln);
         
         return;
     }
     
-    void rightMost(Node node, ArrayList<Integer> rm) {
-        if(node == null) {
+    void rightBoundry(Node node, ArrayList<Integer> rb) {
+        if (node == null) {
             return;
         }
         
-        if(node.left == null && node.right == null) {
-            return;
-        }
-        
-        if(node.right != null) {
-            rightMost(node.right, rm);
+        if (node.right != null) {
+            rightBoundry(node.right, rb);
         } else {
-            rightMost(node.left, rm);
+            rightBoundry(node.left, rb);
         }
-        rm.add(node.data);
+        
+        if (node.left == null && node.right == null) {
+            
+        } else {
+            rb.add(node.data);   
+        }
         
         return;
     }
     
 	ArrayList <Integer> boundary(Node node)
 	{
-	    ArrayList<Integer> ans = new ArrayList();
-	    if(node == null) {
-	        return ans;
+	    ArrayList<Integer> treeBoundry = new ArrayList<>();
+	    
+	    if (node == null) {
+	        return treeBoundry;
 	    }
 	    
-	    ans.add(node.data);
-	    if(node.left == null && node.right == null) {
-	        return ans;
+	    treeBoundry.add(node.data);
+	    
+	    if (node.left == null && node.right == null) {
+	        return treeBoundry;
 	    }
 	    
-	    // left most without node and leaf
-	    ArrayList<Integer> lm = new ArrayList();
-	    leftMost(node.left, lm);
+	    leftBoundry(node.left, treeBoundry);
 	    
-	    // all leaf nodes
-	    ArrayList<Integer> ln = new ArrayList();
-	    leafNode(node, ln);
+	    leafNodes(node, treeBoundry);
 	    
-	    // right most without node and leaf (reverse)
-	    ArrayList<Integer> rm = new ArrayList();
-	    rightMost(node.right, rm);
+	    rightBoundry(node.right, treeBoundry);
 	    
-	    ans.addAll(lm);
-	    ans.addAll(ln);
-	    ans.addAll(rm);
-	    
-	    return ans;
+	    return treeBoundry;
 	}
 }
