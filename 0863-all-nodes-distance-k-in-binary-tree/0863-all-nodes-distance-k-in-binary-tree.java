@@ -9,6 +9,7 @@
  */
 class Solution {
     public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
+//         map -> child : parent
         HashMap<TreeNode, TreeNode> parent = new HashMap<>();
         findParent(root, parent);
         
@@ -18,52 +19,60 @@ class Solution {
         HashSet<TreeNode> vis = new HashSet<>();
         vis.add(target);
         
-        List<Integer> ans = new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
         
         while (que.size() != 0) {
             int size = que.size();
             
             if (k == 0) {
                 while (que.size() != 0) {
-                    ans.add(que.remove().val);
+                    list.add(que.remove().val);
                 }
-                break;
+                return list;
             }
             
-            while (size--> 0) {
+            while (size > 0) {
                 TreeNode rnode = que.remove();
                 
+//                 add left child if available
                 if (rnode.left != null && vis.contains(rnode.left) == false) {
-                    que.add(rnode.left);
                     vis.add(rnode.left);
+                    que.add(rnode.left);
                 }
                 
+//                 add right child if available
                 if (rnode.right != null && vis.contains(rnode.right) == false) {
-                    que.add(rnode.right);
                     vis.add(rnode.right);
+                    que.add(rnode.right);
                 }
                 
+//                 add parent id available
                 if (parent.getOrDefault(rnode, null) != null && vis.contains(parent.get(rnode)) == false) {
-                    que.add(parent.get(rnode));
                     vis.add(parent.get(rnode));
+                    que.add(parent.get(rnode));
                 }
+                
+                size--;
             }
+            
             k--;
         }
         
-        return ans;
+        return list;
     }
     
-    public void findParent(TreeNode root, HashMap<TreeNode, TreeNode> parent) {
+    void findParent(TreeNode root, HashMap<TreeNode, TreeNode> parent) {
         if (root == null) {
             return;
         }
         
         if (root.left != null) {
+//             I have a left child
             parent.put(root.left, root);
         }
         
         if (root.right != null) {
+//             I have a righ child
             parent.put(root.right, root);
         }
         
