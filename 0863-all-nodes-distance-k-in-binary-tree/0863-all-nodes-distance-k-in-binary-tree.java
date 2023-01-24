@@ -12,36 +12,38 @@ class Solution {
         HashMap<TreeNode, TreeNode> parent = new HashMap<>();
         findParent(root, parent);
         
-        HashSet<TreeNode> vis = new HashSet<>();
         Queue<TreeNode> que = new ArrayDeque<>();
         que.add(target);
+        
+        HashSet<TreeNode> vis = new HashSet<>();
         vis.add(target);
         
         List<Integer> ans = new ArrayList<>();
         
-        while(que.size() != 0) {
+        while (que.size() != 0) {
             int size = que.size();
-            if(k == 0) {
-                while(que.size() > 0) {
+            
+            if (k == 0) {
+                while (que.size() != 0) {
                     ans.add(que.remove().val);
                 }
-                return ans;
+                break;
             }
             
-            while(size-- > 0) {
+            while (size--> 0) {
                 TreeNode rnode = que.remove();
                 
-                if(rnode.left != null && vis.contains(rnode.left) == false) {
+                if (rnode.left != null && vis.contains(rnode.left) == false) {
                     que.add(rnode.left);
                     vis.add(rnode.left);
                 }
                 
-                if(rnode.right != null && vis.contains(rnode.right) == false) {
+                if (rnode.right != null && vis.contains(rnode.right) == false) {
                     que.add(rnode.right);
                     vis.add(rnode.right);
                 }
                 
-                if(parent.get(rnode) != null && vis.contains(parent.get(rnode)) == false) {
+                if (parent.getOrDefault(rnode, null) != null && vis.contains(parent.get(rnode)) == false) {
                     que.add(parent.get(rnode));
                     vis.add(parent.get(rnode));
                 }
