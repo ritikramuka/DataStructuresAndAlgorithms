@@ -14,37 +14,35 @@
  * }
  */
 class Solution {
+    
     class Pair {
-        int sum;
-        int maxPathSum;
+        int maxPathSum = 0;
+        int sum = 0;
         
         Pair (int sum, int maxPathSum) {
             this.sum = sum;
             this.maxPathSum = maxPathSum;
         }
-        
-        Pair () {
-            this.sum = 0;
-            this.maxPathSum = Integer.MIN_VALUE;
-        }
     }
     
-    public Pair pathSum(TreeNode root) {
-        if (root == null) return new Pair();
+    public Pair BestPathSum(TreeNode root) {
+        if (root == null) {
+            return new Pair(0, Integer.MIN_VALUE);
+        }
         
-        Pair leftSum = pathSum(root.left);
-        Pair rightSum = pathSum(root.right);
+        Pair LeftPair = BestPathSum(root.left);
+        Pair RightPair = BestPathSum(root.right);
         
-        int leftPath = Math.max(leftSum.sum, 0);
-        int rightPath = Math.max(rightSum.sum, 0);
-        int currMaxPathSum = leftPath + root.val + rightPath;
+        int bestPathSumFromLeft = Math.max(LeftPair.sum, 0);
+        int bestPathSumFromRight = Math.max(RightPair.sum, 0);
+        int currMaxPathSum = bestPathSumFromLeft + root.val + bestPathSumFromRight;
         
-        int overallMaxPathSum = Math.max(currMaxPathSum, Math.max(leftSum.maxPathSum, rightSum.maxPathSum));
-        Pair rootPair = new Pair(Math.max(leftPath + root.val, rightPath + root.val), overallMaxPathSum);
-        return rootPair;
+        int overallMaxPathSum = Math.max(currMaxPathSum, Math.max(LeftPair.maxPathSum, RightPair.maxPathSum));
+        
+        return new Pair(Math.max(bestPathSumFromLeft + root.val, bestPathSumFromRight + root.val), overallMaxPathSum);
     }
     
     public int maxPathSum(TreeNode root) {
-        return pathSum(root).maxPathSum;
+        return BestPathSum(root).maxPathSum;
     }
 }
