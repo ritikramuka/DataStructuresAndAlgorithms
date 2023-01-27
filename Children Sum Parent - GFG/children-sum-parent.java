@@ -140,35 +140,27 @@ class Tree
             return 1;
         }
         
+        // if node is a leaf node then return true
         if (root.left == null && root.right == null) {
             return 1;
         }
         
-        int leftData = 0;
+        int childSum = 0;
         if (root.left != null) {
-            leftData = root.left.data;
+            childSum += root.left.data;
         }
-        
-        int rightData = 0;
         if (root.right != null) {
-            rightData = root.right.data;
+            childSum += root.right.data;
         }
         
-        int childSum = leftData + rightData;
-        if (root.data != childSum) {
+        int isFollowedInLeftSubTree = isSumProperty(root.left);
+        int isFollowedInRightSubTree = isSumProperty(root.right);
+        
+        if (isFollowedInLeftSubTree == 0 || isFollowedInRightSubTree == 0 || childSum != root.data) {
             return 0;
+        } else {
+            return 1;
         }
         
-        int leftSubTree = isSumProperty (root.left);
-        if (leftSubTree == 0) {
-            return 0;
-        }
-        
-        int rightSubTree = isSumProperty (root.right);
-        if (rightSubTree == 0) {
-            return 0;
-        }
-        
-        return 1;
     }
 }
