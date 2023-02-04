@@ -4,9 +4,6 @@ class Solution {
             return s;
         }
         
-        int tcnt = s.length();
-        int cnt = 0;
-        
         StringBuilder sb = new StringBuilder("");
         int idx = 0;
         
