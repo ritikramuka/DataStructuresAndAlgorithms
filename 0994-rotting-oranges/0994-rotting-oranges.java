@@ -9,6 +9,7 @@ class Solution {
         }
     }
     
+    // TC: O(N*M), SC: O(N*M)     
     public int orangesRotting(int[][] grid) {
         int n = grid.length;
         int m = grid[0].length;
