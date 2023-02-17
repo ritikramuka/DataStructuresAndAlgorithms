@@ -14,76 +14,78 @@
  * }
  */
 class Solution {
-    int minLevel = 0;
-    int maxLevel = 0;
-    
-    public void verticalLevels (TreeNode root, int level) {
+    int maxOfPosition = 0;
+    int minOfPosition = 0;
+
+    void getWidth(TreeNode root, int pos) {
         if (root == null) {
             return;
         }
-        
-        verticalLevels(root.left, level - 1);
-        verticalLevels(root.right, level + 1);
-        
-        minLevel = Math.min(level, minLevel);
-        maxLevel = Math.max(level, maxLevel);
+
+        getWidth(root.left, pos - 1);
+        getWidth(root.right, pos + 1);
+
+        maxOfPosition = Math.max(pos, maxOfPosition);
+        minOfPosition = Math.min(pos, minOfPosition);
+
+        return;
     }
-    
+
     class Pair implements Comparable<Pair> {
         TreeNode node;
-        int vLevel;
-        
-        Pair (TreeNode node, int vLevel) {
+        int pos;
+
+        Pair(TreeNode node, int pos) {
+            this.pos = pos;
             this.node = node;
-            this.vLevel = vLevel;
         }
-        
-        @Override
-        public int compareTo(Pair o) {
-            if (this.vLevel == o.vLevel) {
-                return this.node.val - o.node.val;
+
+        @Override 
+        public int compareTo(Pair other) {
+            if (this.pos == other.pos) {
+                return this.node.val - other.node.val;
             }
-            
-            return this.vLevel - o.vLevel;
+
+            return this.pos - other.pos;
         }
     }
-    
-    public List<List<Integer>> verticalTraversal(TreeNode root) {
-        verticalLevels (root, 0);
-        int width = maxLevel - minLevel;
-        int numberOfLevels = width + 1;
-        
-        List<List<Integer>> vo = new ArrayList<>();
-        for (int i = 0; i < numberOfLevels; i++) {
-            vo.add(new ArrayList<>());
+
+    List<List<Integer>> verticalTraversal(TreeNode root) {
+        // Write your code here
+        getWidth(root, 0);
+        int width = maxOfPosition - minOfPosition;
+
+        int levels = width + 1;
+        List<List<Integer>> vw = new ArrayList<>();
+        for (int i = 0; i < levels; i++) {
+            vw.add(new ArrayList<>());
         }
-        
+
         PriorityQueue<Pair> Ppq = new PriorityQueue<>();
-        Ppq.add(new Pair(root, -minLevel));
-        
+        Ppq.add(new Pair(root, -minOfPosition));
+
         while (Ppq.size() > 0) {
             int size = Ppq.size();
-            
+
             PriorityQueue<Pair> Cpq = new PriorityQueue<>();
-            while (size > 0) {
+
+            while (size-- > 0) {
                 Pair rpair = Ppq.remove();
-                
-                vo.get(rpair.vLevel).add(rpair.node.val);
-                
+
+                vw.get(rpair.pos).add(rpair.node.val);
+
                 if (rpair.node.left != null) {
-                    Cpq.add(new Pair(rpair.node.left, rpair.vLevel - 1));
+                    Cpq.add(new Pair(rpair.node.left, rpair.pos - 1));
                 }
-                
+
                 if (rpair.node.right != null) {
-                    Cpq.add(new Pair(rpair.node.right, rpair.vLevel + 1));
+                    Cpq.add(new Pair(rpair.node.right, rpair.pos + 1));
                 }
-                
-                size--;
             }
-            
+
             Ppq = Cpq;
         }
-        
-        return vo;
+
+        return vw;
     }
 }
