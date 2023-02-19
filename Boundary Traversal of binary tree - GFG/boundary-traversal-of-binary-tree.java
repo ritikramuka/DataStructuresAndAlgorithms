@@ -109,105 +109,75 @@ class GFG
 
 class Solution
 {
-    void getLeftBoundry (Node root, ArrayList<Integer> treeBoundry) 
-    {
-        if (root == null) 
-        {
+    ArrayList <Integer> treeBoundry;
+    
+    void leftBoundry (Node node) {
+        if (node == null) {
             return;
-        } 
-        
-        // leaf node
-        if (root.left == null && root.right == null) 
-        {
-            // do nothing 
-            return;
-        } 
-        else 
-        {
-            treeBoundry.add (root.data);
         }
         
-        if (root.left != null) 
-        {
-            getLeftBoundry (root.left, treeBoundry);
-        } 
-        else 
-        {
-            getLeftBoundry (root.right, treeBoundry);
+        if (node.left == null && node.right == null) {
+            return;
+        } else {
+            treeBoundry.add(node.data);   
+        }
+        
+        if (node.left != null) {
+            leftBoundry (node.left);
+        } else {
+            leftBoundry (node.right);
         }
     }
     
-    void getBottomBoundry (Node root, ArrayList<Integer> treeBoundry) 
-    {
-        if (root == null) 
-        {
+    void leafNodes (Node node) {
+        if (node == null) {
             return;
-        } 
-        
-        // leaf node
-        if (root.left == null && root.right == null) 
-        {
-            treeBoundry.add (root.data);
-        } 
-        
-        getBottomBoundry (root.left, treeBoundry);
-        getBottomBoundry (root.right, treeBoundry);
-    }
-    
-    void getRightBoundry (Node root, ArrayList<Integer> treeBoundry) 
-    {
-        if (root == null) 
-        {
-            return;
-        } 
-        
-        if (root.right != null) 
-        {
-            getRightBoundry (root.right, treeBoundry);
-        } 
-        else 
-        {
-            getRightBoundry (root.left, treeBoundry);
         }
         
-        // leaf node
-        if (root.left == null && root.right == null) 
-        {
-            // do nothing 
+        if (node.left == null && node.right == null) {
+            treeBoundry.add(node.data);
+        }
+        
+        leafNodes (node.left);
+        leafNodes (node.right);
+    }
+    
+    void rightBoundry (Node node) {
+        if (node == null) {
             return;
-        } 
-        else 
-        {
-            treeBoundry.add (root.data);
+        }
+        
+        if (node.right != null) {
+            rightBoundry (node.right);
+        } else {
+            rightBoundry (node.left);
+        }
+        
+        if (node.left == null && node.right == null) {
+            return;
+        } else {
+            treeBoundry.add(node.data);   
         }
     }
     
-	ArrayList <Integer> boundary(Node root)
-	{
-	   ArrayList<Integer> treeBoundry = new ArrayList<>();
-	   
-	   if (root == null) 
-	   {
-	       return treeBoundry;
-	   }
+	ArrayList <Integer> boundary (Node node) {
+	    treeBoundry = new ArrayList<>();
 	    
-	   // add root as top boundry
-	   treeBoundry.add (root.data);
-	   
-	   if (root.left == null && root.right == null) 
-	   {
-	       return treeBoundry;
-	   }
-	   
-	   // add left boundry
-	   getLeftBoundry (root.left, treeBoundry);
-	   
-	   // add bottom boundry
-	   getBottomBoundry (root, treeBoundry);
-	   
-	   // add right boundry
-	   getRightBoundry (root.right, treeBoundry);
-	   
-	   return treeBoundry;
+	    // step 1: add root
+	    treeBoundry.add(node.data);
+	    if (node.left == null && node.right == null) {
+	        return treeBoundry;
+	    }
+	    
+	    // step 2: add left boundry from left sub-tree
+	    leftBoundry (node.left);
+	    
+	    // step 3: add leaf nodes
+	    leafNodes (node);
+	    
+	    // step 4: add right boundry from bottom to top from right sub-tree
+        rightBoundry (node.right);
+        
+        return treeBoundry;
 	}
 }
