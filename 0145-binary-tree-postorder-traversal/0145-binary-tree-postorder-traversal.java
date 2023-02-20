@@ -14,13 +14,15 @@
  * }
  */
 class Solution {
-    class Node {
+    class Pair {
         TreeNode node;
-        int calls;
+        // call = 1 -> call left side, call = 2 -> call right side, call = 3 -> remove me         
+        int call;
         
-        Node(TreeNode node) {
+        Pair (TreeNode node) {
             this.node = node;
-            this.calls = 0;
+            // always call left side first          
+            this.call = 1;
         }
     }
     
@@ -31,23 +33,31 @@ class Solution {
             return post;
         }
         
-        Stack<Node> st = new Stack<>();
-        st.push(new Node(root));
+        Stack<Pair> callStack = new Stack<>();
+        callStack.push(new Pair(root));
         
-        while (st.size() != 0) {
-            Node top = st.peek();
+        while (callStack.size() != 0) {
+            Pair rpair = callStack.peek();
             
-            if (top.calls < 1 && top.node.left != null) {
-                Node left = new Node(top.node.left);
-                top.calls = 1;
-                st.push(left);
-            } else if (top.calls < 2 && top.node.right != null) {
-                Node right = new Node(top.node.right);
-                top.calls = 2;
-                st.push(right);
+            if (rpair.call == 1) {
+                // call my left side   
+                if (rpair.node.left != null) {
+                    TreeNode leftNode = rpair.node.left;
+                    callStack.push(new Pair(leftNode));
+                }
+                
+                rpair.call = 2;
+            } else if (rpair.call == 2) {
+                // call my right side   
+                if (rpair.node.right != null) {
+                    TreeNode rightNode = rpair.node.right;
+                    callStack.push(new Pair(rightNode));
+                }
+                
+                rpair.call = 3;
             } else {
-                post.add(top.node.val);
-                st.pop();
+                post.add(rpair.node.val);
+                callStack.pop();
             }
         }
         
