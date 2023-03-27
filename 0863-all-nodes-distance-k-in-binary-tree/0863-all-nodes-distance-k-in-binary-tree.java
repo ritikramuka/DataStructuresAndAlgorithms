@@ -8,75 +8,71 @@
  * }
  */
 class Solution {
-    public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
-//         map -> child : parent
-        HashMap<TreeNode, TreeNode> parent = new HashMap<>();
-        findParent(root, parent);
-        
-        Queue<TreeNode> que = new ArrayDeque<>();
-        que.add(target);
-        
-        HashSet<TreeNode> vis = new HashSet<>();
-        vis.add(target);
-        
-        List<Integer> list = new ArrayList<>();
-        
-        while (que.size() != 0) {
-            int size = que.size();
-            
-            if (k == 0) {
-                while (que.size() != 0) {
-                    list.add(que.remove().val);
-                }
-                return list;
-            }
-            
-            while (size > 0) {
-                TreeNode rnode = que.remove();
-                
-//                 add left child if available
-                if (rnode.left != null && vis.contains(rnode.left) == false) {
-                    vis.add(rnode.left);
-                    que.add(rnode.left);
-                }
-                
-//                 add right child if available
-                if (rnode.right != null && vis.contains(rnode.right) == false) {
-                    vis.add(rnode.right);
-                    que.add(rnode.right);
-                }
-                
-//                 add parent id available
-                if (parent.getOrDefault(rnode, null) != null && vis.contains(parent.get(rnode)) == false) {
-                    vis.add(parent.get(rnode));
-                    que.add(parent.get(rnode));
-                }
-                
-                size--;
-            }
-            
-            k--;
-        }
-        
-        return list;
-    }
+    void findParent(TreeNode root, HashMap<TreeNode, TreeNode>  getParent) {
+		if (root == null) {
+			return;
+		}
+
+		if (root.left != null) {
+			getParent.put(root.left, root);
+		}
+
+		if (root.right != null) {
+			getParent.put(root.right, root);
+		}
+
+		findParent(root.left, getParent);
+		findParent(root.right, getParent);
+	}
+
     
-    void findParent(TreeNode root, HashMap<TreeNode, TreeNode> parent) {
+    public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
         if (root == null) {
-            return;
-        }
-        
-        if (root.left != null) {
-//             I have a left child
-            parent.put(root.left, root);
-        }
-        
-        if (root.right != null) {
-//             I have a righ child
-            parent.put(root.right, root);
-        }
-        
-        findParent(root.left, parent);
-        findParent(root.right, parent);
+			return new ArrayList<>();
+		}
+		
+		// child -> parent
+		HashMap<TreeNode, TreeNode>  getParent = new HashMap<>();
+		findParent(root, getParent);
+
+		HashSet<TreeNode> vis = new HashSet<>();
+		Queue<TreeNode> que = new ArrayDeque<>();
+		vis.add(target);
+		que.add(target);
+		int level = 0;
+
+		while (que.size() != 0) {
+			int size = que.size();
+            
+            if (level == k) {
+				List<Integer> ans = new ArrayList<>();
+				while (que.size() != 0) {
+					ans.add(que.remove().val);
+				}
+				return ans;
+			}
+            
+			while (size-->0) {
+				TreeNode rnode = que.remove();
+
+				if (rnode.left != null && vis.contains(rnode.left) == false) {
+					vis.add(rnode.left);
+					que.add(rnode.left);
+				}
+
+				if (rnode.right != null && vis.contains(rnode.right) == false) {
+					vis.add(rnode.right);
+					que.add(rnode.right);
+				}
+
+				if (getParent.containsKey(rnode) == true && vis.contains(getParent.get(rnode)) == false) {
+					vis.add(getParent.get(rnode));
+					que.add(getParent.get(rnode));
+				}
+			}
+			level++;
+		}
+
+		return new ArrayList<>();
     }
 }
