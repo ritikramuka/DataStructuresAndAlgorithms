@@ -8,11 +8,11 @@ class Solution {
         dp[n - 1][m - 1] = grid[n - 1][m - 1];
         
         for (int i = m - 2; i >= 0; i--) {
-            dp[n - 1][i] += dp[n - 1][i + 1] + grid[n - 1][i];
+            dp[n - 1][i] = dp[n - 1][i + 1] + grid[n - 1][i];
         }
         
         for (int i = n - 2; i >= 0; i--) {
-            dp[i][m - 1] += dp[i + 1][m - 1] + grid[i][m - 1];
+            dp[i][m - 1] = dp[i + 1][m - 1] + grid[i][m - 1];
         }
         
         for (int i = n - 2; i >= 0; i--) {
