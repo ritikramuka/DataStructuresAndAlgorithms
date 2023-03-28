@@ -14,27 +14,32 @@
  * }
  */
 class Solution {
+    /*
+        stack -> {Node, call}
+        
+        call == 1 -> call left side
+        call == 2 -> call right side
+        call == 3 -> remove from stack
+    **/
+    
     class Pair {
         TreeNode node;
-        // call = 1 -> call left side, call = 2 -> call right side, call = 3 -> remove me         
         int call;
         
-        Pair (TreeNode node) {
+        Pair (TreeNode node, int call) {
             this.node = node;
-            // always call left side first          
-            this.call = 1;
+            this.call = call;
         }
     }
     
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> pre = new ArrayList<>();
-        
         if (root == null) {
             return pre;
         }
         
         Stack<Pair> callStack = new Stack<>();
-        callStack.push(new Pair(root));
+        callStack.push(new Pair(root, 1));
         
         while (callStack.size() != 0) {
             Pair rpair = callStack.peek();
@@ -42,22 +47,20 @@ class Solution {
             if (rpair.call == 1) {
                 pre.add(rpair.node.val);
                 
-                // call my left side   
+                // call left side
                 if (rpair.node.left != null) {
-                    TreeNode leftNode = rpair.node.left;
-                    callStack.push(new Pair(leftNode));
+                    callStack.push(new Pair(rpair.node.left, 1));
                 }
                 
                 rpair.call = 2;
             } else if (rpair.call == 2) {
-                // call my right side   
+                // call right side
                 if (rpair.node.right != null) {
-                    TreeNode rightNode = rpair.node.right;
-                    callStack.push(new Pair(rightNode));
+                    callStack.push(new Pair(rpair.node.right, 1));
                 }
                 
                 rpair.call = 3;
-            } else {
+            } else if (rpair.call == 3) {
                 callStack.pop();
             }
         }
