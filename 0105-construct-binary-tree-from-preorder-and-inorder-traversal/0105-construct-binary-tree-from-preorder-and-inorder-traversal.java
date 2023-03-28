@@ -14,7 +14,7 @@
  * }
  */
 class Solution {
-    TreeNode constructTree (int[] preorder, int psi, int pei, int[] inorder, int isi, int iei) {
+    public TreeNode construct(int[] pre, int psi, int pei, int[] in, int isi, int iei) {
         if (psi > pei) {
             return null;
         }
@@ -23,23 +23,22 @@ class Solution {
             return null;
         }
         
-        TreeNode root = new TreeNode(preorder[psi]);
+        TreeNode root = new TreeNode(pre[psi]);
         
-        int val = preorder[psi];
-        int itr = isi;
-        int cntElements = 0;
-        while (inorder[itr] != val) {
-            cntElements++;
-            itr++;
+        int i = isi;
+        int cntNumberOfNodesInLeftSubtree = 0;
+        while (in[i] != root.val) {
+            i++;
+            cntNumberOfNodesInLeftSubtree++;
         }
         
-        root.left = constructTree(preorder, psi + 1, psi + cntElements, inorder, isi, itr - 1);
-        root.right = constructTree(preorder, psi + cntElements + 1, pei, inorder, itr + 1, iei);
+        root.left = construct(pre, psi + 1, psi + cntNumberOfNodesInLeftSubtree, in, isi, i - 1);
+        root.right = construct(pre, psi + cntNumberOfNodesInLeftSubtree + 1, pei, in, i + 1, iei);
         
         return root;
     }
     
     public TreeNode buildTree(int[] preorder, int[] inorder) {
-        return constructTree(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);
+        return construct(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);
     }
 }
