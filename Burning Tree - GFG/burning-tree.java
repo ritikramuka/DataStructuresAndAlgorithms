@@ -175,6 +175,7 @@ class Solution
         return null;
     }
     
+    // TC: O(N), SC: O(N)
     public static int minTime(Node root, int target) 
     {
         // Your code goes here
@@ -197,17 +198,20 @@ class Solution
             {
                 Node rnode = que.remove();
                 
-                if (rnode.left != null && vis.contains(rnode.left) == false) {
+                if (rnode.left != null && vis.contains(rnode.left) == false) 
+                {
                     que.add(rnode.left);
                     vis.add(rnode.left);
                 }
                 
-                if (rnode.right != null && vis.contains(rnode.right) == false) {
+                if (rnode.right != null && vis.contains(rnode.right) == false) 
+                {
                     que.add(rnode.right);
                     vis.add(rnode.right);
                 }
                 
-                if (parent.containsKey(rnode) == true && vis.contains(parent.get(rnode)) == false) {
+                if (parent.containsKey(rnode) == true && vis.contains(parent.get(rnode)) == false) 
+                {
                     que.add(parent.get(rnode));
                     vis.add(parent.get(rnode));
                 }
