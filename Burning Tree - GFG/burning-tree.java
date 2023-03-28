@@ -127,25 +127,28 @@ class Solution
     	}
     }*/
     
-    public static void getParent (Node root, HashMap<Node, Node> parent)
+    static void setParent(Node root, HashMap<Node, Node> parent) 
     {
-        if (root == null) return;
+        if (root == null) 
+        {
+            return;
+        }
         
         if (root.left != null) 
         {
-            parent.put(root.left, root);
+            parent.put(root.left, root);    
         }
         
         if (root.right != null) 
         {
-            parent.put(root.right, root);
+            parent.put(root.right, root);    
         }
         
-        getParent(root.left, parent);
-        getParent(root.right, parent);
+        setParent(root.left, parent);
+        setParent(root.right, parent);
     }
     
-    public static Node findTarget (Node root, int target) 
+    static Node find(Node root, int target) 
     {
         if (root == null) 
         {
@@ -157,13 +160,13 @@ class Solution
             return root;
         }
         
-        Node filc = findTarget(root.left, target);
+        Node filc = find(root.left, target);
         if (filc != null) 
         {
             return filc;
         }
         
-        Node firc = findTarget(root.right, target);
+        Node firc = find(root.right, target);
         if (firc != null) 
         {
             return firc;
@@ -175,44 +178,39 @@ class Solution
     public static int minTime(Node root, int target) 
     {
         // Your code goes here
-        HashMap<Node, Node> parent = new HashMap<>();
-        getParent(root, parent);
+        HashMap<Node, Node> parent = new HashMap();
+        setParent(root, parent);
         
-        Node targetNode = findTarget(root, target);
+        Node src = find(root, target);
         
         Queue<Node> que = new ArrayDeque<>();
-        que.add(targetNode);
+        que.add(src);
         
-        HashSet<Node> burned = new HashSet<>();
-        burned.add(targetNode);
+        HashSet<Node> vis = new HashSet<>();
+        vis.add(src);
         
         int level = 0;
         while (que.size() != 0) 
         {
             int size = que.size();
-            while (size > 0) 
+            while (size-->0) 
             {
                 Node rnode = que.remove();
                 
-                if (rnode.left != null && burned.contains(rnode.left) == false) 
-                {
-                    burned.add(rnode.left);
+                if (rnode.left != null && vis.contains(rnode.left) == false) {
                     que.add(rnode.left);
+                    vis.add(rnode.left);
                 }
                 
-                if (rnode.right != null && burned.contains(rnode.right) == false) 
-                {
-                    burned.add(rnode.right);
+                if (rnode.right != null && vis.contains(rnode.right) == false) {
                     que.add(rnode.right);
+                    vis.add(rnode.right);
                 }
                 
-                if (parent.getOrDefault(rnode, null) != null && burned.contains(parent.get(rnode)) == false) 
-                {
-                    burned.add(parent.get(rnode));
+                if (parent.containsKey(rnode) == true && vis.contains(parent.get(rnode)) == false) {
                     que.add(parent.get(rnode));
+                    vis.add(parent.get(rnode));
                 }
-                
-                size--;    
             }
             level++;
         }
