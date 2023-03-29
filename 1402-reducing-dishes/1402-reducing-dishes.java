@@ -4,14 +4,16 @@ class Solution {
         
         Arrays.sort(satisfaction);
         
-        int[][] dp = new int[n + 1][n + 2];
+        int ans = 0;
+        int pSum = 0;
+        int timeCoff = 0;
         
         for (int i = n - 1; i >= 0; i--) {
-            for (int j = n; j >= 1; j--) {
-                dp[i][j] = Math.max(dp[i + 1][j + 1] + satisfaction[i] * j, dp[i + 1][j]);
-            }
+            pSum += satisfaction[i];
+            timeCoff += pSum;
+            ans = Math.max(timeCoff, ans);
         }
         
-        return dp[0][1];
+        return ans;
     }
 }
