@@ -13,6 +13,7 @@ class Solution {
         }
     }
     
+    // TC: O(N), SC: O(1)
     public void rotate(int[] nums, int k) {
         int n = nums.length;
         
