@@ -30,6 +30,7 @@ class Solution {
         preOrder(root.right, pre);
     }
     
+    // TC: O(N), SC: O(log N)
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> pre = new ArrayList<>();
         preOrder(root, pre);
