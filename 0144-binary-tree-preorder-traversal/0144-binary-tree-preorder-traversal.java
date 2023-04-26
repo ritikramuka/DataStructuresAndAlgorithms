@@ -14,57 +14,25 @@
  * }
  */
 class Solution {
-    /*
-        stack -> {Node, call}
-        
-        call == 1 -> call left side
-        call == 2 -> call right side
-        call == 3 -> remove from stack
-    **/
-    
-    class Pair {
-        TreeNode node;
-        int call;
-        
-        Pair (TreeNode node, int call) {
-            this.node = node;
-            this.call = call;
+    public void preOrder(TreeNode root, List<Integer> pre) {
+        // base case
+        if (root == null) {
+            return;
         }
+        
+        // store root value
+        pre.add(root.val);
+        
+        // call left subtree
+        preOrder(root.left, pre);
+        
+        // call right subtree
+        preOrder(root.right, pre);
     }
     
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> pre = new ArrayList<>();
-        if (root == null) {
-            return pre;
-        }
-        
-        Stack<Pair> callStack = new Stack<>();
-        callStack.push(new Pair(root, 1));
-        
-        while (callStack.size() != 0) {
-            Pair rpair = callStack.peek();
-            
-            if (rpair.call == 1) {
-                pre.add(rpair.node.val);
-                
-                // call left side
-                if (rpair.node.left != null) {
-                    callStack.push(new Pair(rpair.node.left, 1));
-                }
-                
-                rpair.call = 2;
-            } else if (rpair.call == 2) {
-                // call right side
-                if (rpair.node.right != null) {
-                    callStack.push(new Pair(rpair.node.right, 1));
-                }
-                
-                rpair.call = 3;
-            } else if (rpair.call == 3) {
-                callStack.pop();
-            }
-        }
-        
+        preOrder(root, pre);
         return pre;
     }
 }
