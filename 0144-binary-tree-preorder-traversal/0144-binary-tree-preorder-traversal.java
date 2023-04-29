@@ -14,26 +14,48 @@
  * }
  */
 class Solution {
-    public void preOrder(TreeNode root, List<Integer> pre) {
-        // base case
-        if (root == null) {
-            return;
+    class Pair {
+        TreeNode node;
+        int state;
+        
+        Pair (TreeNode node, int state) {
+            this.node = node;
+            this.state = state;
         }
-        
-        // store root value
-        pre.add(root.val);
-        
-        // call left subtree
-        preOrder(root.left, pre);
-        
-        // call right subtree
-        preOrder(root.right, pre);
     }
     
-    // TC: O(N), SC: O(log N)
+    /*
+    * state 0 -> print
+    * state 1 -> call left side
+    * state 2 -> call rigth side
+    **/
+    
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> pre = new ArrayList<>();
-        preOrder(root, pre);
+        if (root == null) return pre;
+        
+        Stack<Pair> callStack = new Stack<>();
+        callStack.push(new Pair(root, 0));
+        
+        while (callStack.size() != 0) {
+            Pair rpair = callStack.pop();
+            
+            if (rpair.state == 0) {
+                pre.add(rpair.node.val);
+                callStack.push(new Pair(rpair.node, 1));
+            } else if (rpair.state == 1) {
+                callStack.push(new Pair(rpair.node, 2));
+                if (rpair.node.left != null) {
+                    callStack.push(new Pair(rpair.node.left, 0));
+                }
+            } else if (rpair.state == 2) {
+                callStack.push(new Pair(rpair.node, 3));
+                if (rpair.node.right != null) {
+                    callStack.push(new Pair(rpair.node.right, 0));
+                }
+            }
+        }
+        
         return pre;
     }
 }
