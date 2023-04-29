@@ -14,54 +14,45 @@
  * }
  */
 class Solution {
-    /*
-        stack -> {Node, call}
-        
-        call == 1 -> call left side
-        call == 2 -> call right side
-        call == 3 -> remove from stack
-    **/
-    
     class Pair {
         TreeNode node;
-        int call;
+        int state;
         
-        Pair (TreeNode node, int call) {
+        Pair (TreeNode node, int state) {
             this.node = node;
-            this.call = call;
+            this.state = state;
         }
     }
     
+    /*
+    * state 0 -> call left side
+    * state 1 -> print
+    * state 2 -> call rigth side
+    **/
+    
     public List<Integer> inorderTraversal(TreeNode root) {
         List<Integer> in = new ArrayList<>();
-        if (root == null) {
-            return in;
-        }
+        if (root == null) return in;
         
         Stack<Pair> callStack = new Stack<>();
-        callStack.push(new Pair(root, 1));
+        callStack.push(new Pair(root, 0));
         
         while (callStack.size() != 0) {
-            Pair rpair = callStack.peek();
+            Pair rpair = callStack.pop();
             
-            if (rpair.call == 1) {
-                // call left side
+            if (rpair.state == 0) {
+                callStack.push(new Pair(rpair.node, 1));
                 if (rpair.node.left != null) {
-                    callStack.push(new Pair(rpair.node.left, 1));
+                    callStack.push(new Pair(rpair.node.left, 0));
                 }
-                
-                rpair.call = 2;
-            } else if (rpair.call == 2) {
+            } else if (rpair.state == 1) {
                 in.add(rpair.node.val);
-                
-                // call right side
+                callStack.push(new Pair(rpair.node, 2));
+            } else if (rpair.state == 2) {
+                callStack.push(new Pair(rpair.node, 3));
                 if (rpair.node.right != null) {
-                    callStack.push(new Pair(rpair.node.right, 1));
+                    callStack.push(new Pair(rpair.node.right, 0));
                 }
-                
-                rpair.call = 3;
-            } else if (rpair.call == 3) {
-                callStack.pop();
             }
         }
         
