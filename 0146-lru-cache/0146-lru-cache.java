@@ -1,87 +1,96 @@
+class Node {
+	int key;
+	int value;
+	Node next;
+	Node prev;
+
+	Node () {
+		this.key = 0;
+        this.value = 0;
+        this.prev = null;
+        this.next = null;
+	}
+
+	Node (int key, int value) {
+		this.key = key;
+		this.value = value;
+        this.prev = null;
+        this.next = null;
+	}
+
+	void updateValue (int value) {
+		this.value = value;
+	}
+}
+
 class LRUCache {
-    class Node {
-        int key;
-        int val;
-
-        Node next;
-        Node prev;
-
-        Node () {
-            this.key = 0;
-            this.val = 0;
-            this.next = null;
-            this.prev = null;
-        }
-
-        Node (int key, int val) {
-            this.key = key;
-            this.val = val;
-        }
-    }
-
-    private void addNode(Node node) {
-        node.next = head.next;
-        node.prev = head;
-
-        head.next.prev = node;
-        head.next = node;
-    }
-
-    private void removeNode(Node node) {
-        Node prv = node.prev;
-        Node nxt = node.next;
-
-        prv.next = nxt;
-        nxt.prev = prv;
-    }
-
-    private void moveToFront(Node node) {
-        removeNode(node);
-        addNode(node);
-    }
-
-    HashMap<Integer, Node> cache;
-    Node head, tail;
-    int cap;
+    
+    Node head;
+	Node tail;
+	int size;
+	HashMap<Integer, Node> map;
 
     public LRUCache(int capacity) {
         head = new Node();
-        tail = new Node();
+		tail = new Node();
+		
         head.next = tail;
-        tail.prev = head;
-        cache = new HashMap<>();
-        cap = capacity;
+		tail.prev = head;
+		
+        size = capacity;
+		map = new HashMap<>();
     }
     
-    public int get(int key) {
-        Node node = cache.get(key);
+    void addFront(Node node) {
+		Node temp = head.next;
+		head.next = node;
+		node.prev = head;
+		node.next = temp;
+		temp.prev = node;
+	}
 
-        if (node == null) {
-            return -1;
-        } else {
-            moveToFront(node);
-            return node.val;
-        }
+	void removeNode(Node node) {
+		Node prevNode = node.prev;
+		Node nextNode = node.next;
+		
+        prevNode.next = nextNode;
+		nextNode.prev = prevNode;
+		
+        node.next = null;
+		node.prev = null;
+	}
+
+	void moveToFront(Node node) {
+		removeNode(node);
+		addFront(node);
+	}
+    
+    public int get(int key) {
+        if (map.containsKey(key) == true) {
+			Node node = map.get(key);
+			moveToFront(node);
+			return node.value;
+		} else {
+			return -1;
+		}
     }
     
     public void put(int key, int value) {
-        Node node = cache.get(key);
-
-        if (node != null) {
-            node.val = value;
-            moveToFront(node);
-        } else {
-            Node newNode = new Node();
-            newNode.key = key;
-            newNode.val = value;
-            if (cache.size() == cap) {
-            int LRU_Key = tail.prev.key;
-            Node LRU_Node = cache.remove(LRU_Key);
-            removeNode(LRU_Node);
-            }
-            cache.put(key, newNode);
-            addNode(newNode);
-        }
+        if (map.containsKey(key) == true) {
+			// updating
+			Node node = map.get(key);
+			node.updateValue(value);
+			moveToFront(node);
+		} else {
+			Node node = new Node(key, value);
+			if (map.size() == size) {
+				Node LRU_Node = tail.prev;
+				removeNode(LRU_Node);
+				map.remove(LRU_Node.key);
+			} 
+			addFront(node);
+			map.put(key, node);
+		}
     }
 }
 
