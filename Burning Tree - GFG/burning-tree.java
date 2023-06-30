@@ -127,47 +127,47 @@ class Solution
     	}
     }*/
     
-    public static void getParent(Node root, HashMap<Node, Node> parent) 
+    public static void traversal(Node root, HashMap<Node, Node> map) 
     {
         if (root == null) 
         {
             return;
-        }
+        }    
         
         if (root.left != null) 
         {
-            parent.put(root.left, root);
+            map.put(root.left, root);    
         }
         
         if (root.right != null) 
         {
-            parent.put(root.right, root);
+            map.put(root.right, root); 
         }
         
-        getParent(root.left, parent);
-        getParent(root.right, parent);
+        traversal(root.left, map);
+        traversal(root.right, map);
     }
     
-    public static Node find(Node root, int target) 
+    static Node find(Node root, int tar) 
     {
         if (root == null) 
         {
-            return null;    
-        }    
+            return null;
+        }
         
-        if (root.data == target) 
+        if (root.data == tar) 
         {
             return root;
         }
         
-        Node filc = find(root.left, target);
-        if (filc != null) 
+        Node filc = find(root.left, tar);
+        if (filc != null)
         {
             return filc;
         }
         
-        Node firc = find(root.right, target);
-        if (firc != null) 
+        Node firc = find(root.right, tar);
+        if (firc != null)
         {
             return firc;
         }
@@ -175,32 +175,33 @@ class Solution
         return null;
     }
     
+    
     public static int minTime(Node root, int target) 
     {
-        // Your code goes here
-        if (root == null) 
+        // stores child -> parent
+        HashMap<Node, Node> map = new HashMap<>();
+        traversal(root, map);
+        
+        Node src = find(root, target);
+        
+        if (src == null) 
         {
             return 0;    
         }
         
-        // key -> child's address, value -> parent's address
-        HashMap<Node, Node> parent = new HashMap<>();
-        getParent(root, parent);
+        Queue<Node> que = new ArrayDeque<>();
         
-        Node src = find(root, target);
+        que.add(src);
         
         HashSet<Node> vis = new HashSet<>();
-        
-        Queue<Node> que = new ArrayDeque<>();
-        que.add(src);
         vis.add(src);
         
         int level = 0;
         
-        while (que.size() != 0) 
+        while (que.size() > 0) 
         {
             int size = que.size();
-            while (size-->0) 
+            while (size-->0)
             {
                 Node rnode = que.remove();
                 
@@ -210,25 +211,28 @@ class Solution
                     vis.add(rnode.left);
                 }
                 
-                if (rnode.right != null && vis.contains(rnode.right) == false) 
+                if (rnode.right != null && vis.contains(rnode.right) == false)
                 {
                     que.add(rnode.right);
                     vis.add(rnode.right);
                 }
                 
-                if (parent.get(rnode) != null && vis.contains(parent.get(rnode)) == false) 
+                if (map.containsKey(rnode) == true && vis.contains(map.get(rnode)) == false)
                 {
-                    que.add(parent.get(rnode));
-                    vis.add(parent.get(rnode));
+                    que.add(map.get(rnode));
+                    vis.add(map.get(rnode));
                 }
             }
             level++;
         }
         
-        if (level - 1 < 0) {
-            return 0;
+        if (level == 0) 
+        {
+            return 0;    
         }
         
-        return level - 1;
+        int time = level - 1;
+        
+        return time;
     }
 }
