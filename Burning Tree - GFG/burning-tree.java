@@ -127,46 +127,46 @@ class Solution
     	}
     }*/
     
-    public static void traversal(Node root, HashMap<Node, Node> map) 
+    public static void traverse(Node root, HashMap<Node, Node> parentHM) 
     {
-        if (root == null) 
+        if (root == null)
         {
             return;
-        }    
+        }
         
         if (root.left != null) 
         {
-            map.put(root.left, root);    
+            parentHM.put(root.left, root);
         }
         
         if (root.right != null) 
         {
-            map.put(root.right, root); 
+            parentHM.put(root.right, root);
         }
         
-        traversal(root.left, map);
-        traversal(root.right, map);
+        traverse(root.left, parentHM);
+        traverse(root.right, parentHM);
     }
     
-    static Node find(Node root, int tar) 
+    public static Node find(Node root, int target) 
     {
         if (root == null) 
         {
             return null;
         }
         
-        if (root.data == tar) 
+        if (root.data == target) 
         {
             return root;
         }
         
-        Node filc = find(root.left, tar);
+        Node filc = find(root.left, target);
         if (filc != null)
         {
             return filc;
         }
         
-        Node firc = find(root.right, tar);
+        Node firc = find(root.right, target);
         if (firc != null)
         {
             return firc;
@@ -175,63 +175,60 @@ class Solution
         return null;
     }
     
-    
     public static int minTime(Node root, int target) 
     {
-        // stores child -> parent
-        HashMap<Node, Node> map = new HashMap<>();
-        traversal(root, map);
+        // Your code goes here
+        HashMap<Node, Node> parentHM = new HashMap<>();
+        traverse(root, parentHM);
         
         Node src = find(root, target);
-        
         if (src == null) 
         {
             return 0;    
         }
         
-        Queue<Node> que = new ArrayDeque<>();
-        
-        que.add(src);
-        
         HashSet<Node> vis = new HashSet<>();
+        
+        Queue<Node> que = new ArrayDeque<>();
+        que.add(src);
         vis.add(src);
         
         int level = 0;
         
-        while (que.size() > 0) 
+        while (que.size() != 0) 
         {
             int size = que.size();
-            while (size-->0)
+            while (size-->0) 
             {
                 Node rnode = que.remove();
                 
                 if (rnode.left != null && vis.contains(rnode.left) == false) 
                 {
-                    que.add(rnode.left);
                     vis.add(rnode.left);
+                    que.add(rnode.left);
                 }
                 
-                if (rnode.right != null && vis.contains(rnode.right) == false)
+                if (rnode.right != null && vis.contains(rnode.right) == false) 
                 {
-                    que.add(rnode.right);
                     vis.add(rnode.right);
+                    que.add(rnode.right);
                 }
                 
-                if (map.containsKey(rnode) == true && vis.contains(map.get(rnode)) == false)
+                if (parentHM.containsKey(rnode) == true && vis.contains(parentHM.get(rnode)) == false) 
                 {
-                    que.add(map.get(rnode));
-                    vis.add(map.get(rnode));
+                    vis.add(parentHM.get(rnode));
+                    que.add(parentHM.get(rnode));
                 }
             }
             level++;
         }
         
-        if (level == 0) 
-        {
-            return 0;    
-        }
-        
         int time = level - 1;
+        
+        if (time < 0) 
+        {
+            return 0;
+        }
         
         return time;
     }
