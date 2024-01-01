@@ -127,41 +127,41 @@ class Solution
     	}
     }*/
     
-    public static void traverse(Node root, HashMap<Node, Node> parentHM) 
+    public static void traverse(Node root, HashMap<Node, Node> map) 
     {
-        if (root == null)
+        if (root == null) 
         {
             return;
         }
         
         if (root.left != null) 
         {
-            parentHM.put(root.left, root);
+            map.put(root.left, root);
         }
         
         if (root.right != null) 
         {
-            parentHM.put(root.right, root);
+            map.put(root.right, root);
         }
         
-        traverse(root.left, parentHM);
-        traverse(root.right, parentHM);
+        traverse(root.left, map);
+        traverse(root.right, map);
     }
     
     public static Node find(Node root, int target) 
     {
         if (root == null) 
         {
-            return null;
-        }
+            return null;    
+        }    
         
         if (root.data == target) 
         {
-            return root;
+            return root;    
         }
         
         Node filc = find(root.left, target);
-        if (filc != null)
+        if (filc != null) 
         {
             return filc;
         }
@@ -177,24 +177,18 @@ class Solution
     
     public static int minTime(Node root, int target) 
     {
-        // Your code goes here
-        HashMap<Node, Node> parentHM = new HashMap<>();
-        traverse(root, parentHM);
+        HashMap<Node, Node> map = new HashMap<>();
+        traverse(root, map);
         
         Node src = find(root, target);
-        if (src == null) 
-        {
-            return 0;    
-        }
-        
-        HashSet<Node> vis = new HashSet<>();
         
         Queue<Node> que = new ArrayDeque<>();
         que.add(src);
-        vis.add(src);
         
-        int level = 0;
+        HashSet<Node> set = new HashSet<>();
+        set.add(src);
         
+        int time = 0;
         while (que.size() != 0) 
         {
             int size = que.size();
@@ -202,34 +196,32 @@ class Solution
             {
                 Node rnode = que.remove();
                 
-                if (rnode.left != null && vis.contains(rnode.left) == false) 
+                if (rnode.left != null && set.contains(rnode.left) == false) 
                 {
-                    vis.add(rnode.left);
+                    set.add(rnode.left);
                     que.add(rnode.left);
                 }
                 
-                if (rnode.right != null && vis.contains(rnode.right) == false) 
+                if (rnode.right != null && set.contains(rnode.right) == false) 
                 {
-                    vis.add(rnode.right);
+                    set.add(rnode.right);
                     que.add(rnode.right);
                 }
                 
-                if (parentHM.containsKey(rnode) == true && vis.contains(parentHM.get(rnode)) == false) 
+                if (map.get(rnode) != null && set.contains(map.get(rnode)) == false) 
                 {
-                    vis.add(parentHM.get(rnode));
-                    que.add(parentHM.get(rnode));
+                    set.add(map.get(rnode));
+                    que.add(map.get(rnode));
                 }
             }
-            level++;
+            time++;
         }
         
-        int time = level - 1;
-        
-        if (time < 0) 
+        if (time == 0) 
         {
             return 0;
         }
         
-        return time;
+        return time - 1;
     }
 }
