@@ -1,7 +1,10 @@
 class FooBar {
     private int n;
-    private Semaphore f = new Semaphore(1);
-    private Semaphore b = new Semaphore(0);
+    
+    ReentrantLock lock = new ReentrantLock();
+    Condition fooCdn = lock.newCondition();
+    Condition barCdn = lock.newCondition();
+    AtomicBoolean printedFoo = new AtomicBoolean(false);
 
     public FooBar(int n) {
         this.n = n;
@@ -10,22 +13,38 @@ class FooBar {
     public void foo(Runnable printFoo) throws InterruptedException {
         
         for (int i = 0; i < n; i++) {
-            // f has one permite          
-            f.acquire();
-        	// printFoo.run() outputs "foo". Do not change or remove this line.
-        	printFoo.run(); 
-            b.release();
+            lock.lock();
+            
+            try {
+                while (printedFoo.get()) {
+                    fooCdn.await();
+                }
+                
+                printFoo.run(); 
+                printedFoo.set(true);
+                barCdn.signal();
+            } finally {
+                lock.unlock();
+            }
         }
     }
 
     public void bar(Runnable printBar) throws InterruptedException {
         
         for (int i = 0; i < n; i++) {
-            // b will wait           
-            b.acquire();
-            // printBar.run() outputs "bar". Do not change or remove this line.
-        	printBar.run();
-            f.release();
+            lock.lock();
+            
+            try {
+                while (!printedFoo.get()) {
+                    barCdn.await();
+                }
+                
+                printBar.run();; 
+                printedFoo.set(false);
+                fooCdn.signal();
+            } finally {
+                lock.unlock();
+            }
         }
     }
 }
