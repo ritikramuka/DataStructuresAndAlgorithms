@@ -26,10 +26,10 @@ class DiningPhilosophers {
             
             putLeftFork.run();
             isLeftAvailable.set(true);
-            thinking.signal();
             
             putRightFork.run();
             isRightAvailable.set(true);
+            
             thinking.signal();
         } finally {
             lock.unlock();
