@@ -1,32 +1,52 @@
 class Foo {
-    Semaphore second = new Semaphore(0);
-    Semaphore third = new Semaphore(0);
+    public ReentrantLock lock;
+    boolean oneDone;
+    boolean twoDone;
+    Condition one;
+    Condition two;
 
     public Foo() {
-        
+        lock = new ReentrantLock();
+        oneDone = false;
+        twoDone = false;
+        one = lock.newCondition();
+        two = lock.newCondition();
     }
 
     public void first(Runnable printFirst) throws InterruptedException {
-        
-        // printFirst.run() outputs "first". Do not change or remove this line.
-        printFirst.run();
-        
-        second.release();
+        lock.lock();
+        try {
+            printFirst.run();
+            oneDone = true;
+            one.signal();
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void second(Runnable printSecond) throws InterruptedException {
-        second.acquire();
-        
-        // printSecond.run() outputs "second". Do not change or remove this line.
-        printSecond.run();
-        
-        third.release();
+        lock.lock();
+        try {
+            while (!oneDone) {
+                one.await();
+            }
+            printSecond.run();
+            twoDone = true;
+            two.signal();
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void third(Runnable printThird) throws InterruptedException {
-        third.acquire();
-        
-        // printThird.run() outputs "third". Do not change or remove this line.
-        printThird.run();
+        lock.lock();
+        try {
+            while (!twoDone) {
+                two.await();
+            }
+            printThird.run();
+        } finally {
+            lock.unlock();
+        }
     }
 }
