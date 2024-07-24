@@ -1,29 +1,51 @@
 class H2O {
-    Semaphore h;
-    Semaphore o;
+    
+    ReentrantLock lock = new ReentrantLock();
+    Condition relO = lock.newCondition();
+    Condition relH = lock.newCondition();
+    
+    AtomicInteger cntOfHReleased = new AtomicInteger(0);
+    AtomicBoolean startORelease = new AtomicBoolean(true);
 
     public H2O() {
-        h = new Semaphore(2);
-        o = new Semaphore(1);
+        
     }
 
     public void hydrogen(Runnable releaseHydrogen) throws InterruptedException {
-		h.acquire();
+        lock.lock();
         
-        // releaseHydrogen.run() outputs "H". Do not change or remove this line.
-        releaseHydrogen.run();
-        
-        if (h.availablePermits() == 0) {
-            o.release(1);
+        try {
+            while (startORelease.get()) {
+                relH.await();
+            }
+
+            releaseHydrogen.run();
+            cntOfHReleased.getAndIncrement();
+            if (cntOfHReleased.get() == 2) {
+                cntOfHReleased.set(0);
+                startORelease.set(true);
+                relO.signal();
+            }
+        } finally {
+            lock.unlock();
         }
+        
     }
 
     public void oxygen(Runnable releaseOxygen) throws InterruptedException {
-        o.acquire();
+        lock.lock();
         
-        // releaseOxygen.run() outputs "O". Do not change or remove this line.
-		releaseOxygen.run();
+        try {
+            while (!startORelease.get()) {
+                relO.await();
+            }
+
+            releaseOxygen.run();
+            startORelease.set(false);
+            relH.signalAll();
+        } finally {
+            lock.unlock();
+        }
         
-        h.release(2);
     }
 }
