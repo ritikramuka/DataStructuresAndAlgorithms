@@ -6,7 +6,7 @@
  * }
  */
 class Solution {
-    private int maxNumberOrWorkers = 8;
+    private int maxNumberOrWorkers = 6;
     
     private void work(int workerId, String hostName, Queue<String> urlQ, HashSet<String> visUrl, ReentrantLock urlQLock, Condition urlQCdn, AtomicInteger idleWorkers, HtmlParser htmlParser) {
         while (true) {
