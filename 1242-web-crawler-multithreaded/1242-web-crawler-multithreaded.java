@@ -5,100 +5,96 @@
  *     public List<String> getUrls(String url) {}
  * }
  */
-
 class Solution {
-    private int maxWorker = 5;
-    private Queue<String> urlToParseQ = new LinkedList<>();
-    private HashSet<String> parsed = new HashSet<>();
-    private String hostName = "";
-    private ReentrantLock qLock = new ReentrantLock();
-    private Condition qCdn = qLock.newCondition();
-    private HashSet<Integer> workerIdle = new HashSet<>();
+    private int maxNumberOrWorkers = 8;
     
-    public String getHostname(String url) {
-        int startIdx = url.indexOf("//") + 2;
-        int endIdx = url.indexOf('/', startIdx);
-
-        if (endIdx == -1) {
-            return url.substring(startIdx);
-        }
-
-        return url.substring(startIdx, endIdx);
-    }
-    
-    public void work(int workerId, HtmlParser htmlParser) {
+    private void work(int workerId, String hostName, Queue<String> urlQ, HashSet<String> visUrl, ReentrantLock urlQLock, Condition urlQCdn, AtomicInteger idleWorkers, HtmlParser htmlParser) {
         while (true) {
             String currUrl = null;
             
-            qLock.lock();
+            urlQLock.lock();
             try {
-                while (urlToParseQ.isEmpty()) {
-                    workerIdle.add(workerId);
-                    
-                    // if all are idle return
-                    if (workerIdle.size() == maxWorker) {
-                        qCdn.signalAll();
+                while (urlQ.isEmpty()) {
+                    // starting to be idle
+                    idleWorkers.getAndIncrement();
+                    if (idleWorkers.get() == maxNumberOrWorkers) {
+                        urlQCdn.signalAll();
                         return;
                     }
                     
-                    qCdn.await();
-                    workerIdle.remove(workerId);
+                    urlQCdn.await();
+                    
+                    // might become non idle
+                    idleWorkers.getAndDecrement();
                 }
                 
-                currUrl = urlToParseQ.poll();
+                currUrl = urlQ.poll();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                e.printStackTrace();  
             } finally {
-                qLock.unlock();
+                urlQLock.unlock();
             }
             
-            if (currUrl == null) {
-                continue;
-            }
-            
-            List<String> nextUrls = htmlParser.getUrls(currUrl);
-            
-            qLock.lock();
-            try {
-                for (String nextUrl: nextUrls) {
-                    if (parsed.contains(nextUrl) == false && hostName.equals(getHostname(nextUrl))) {
-                        urlToParseQ.add(nextUrl);
-                        parsed.add(nextUrl);
+            if (currUrl != null) {
+                List<String> nextUrls = htmlParser.getUrls(currUrl);
+                
+                urlQLock.lock();
+                try {
+                    for (String nextUrl: nextUrls) {
+                        String localHostName = getHostName(nextUrl);
                         
-                        qCdn.signal();
-                    } 
+                        if (!visUrl.contains(nextUrl) && localHostName.equals(hostName)) {
+                            urlQ.add(nextUrl);
+                            visUrl.add(nextUrl);
+                            
+                            urlQCdn.signal();
+                        }
+                    }
+                } finally {
+                    urlQLock.unlock();
                 }
-            } catch (Error e) {
-                e.printStackTrace();
-            } finally {
-                qLock.unlock();
             }
         }
     }
     
+    private String getHostName(String url) {
+        String hostName = url.substring(7).split("/")[0];
+        return hostName;
+    }
+    
     public List<String> crawl(String startUrl, HtmlParser htmlParser) {
-        hostName = getHostname(startUrl);
         
-        urlToParseQ.add(startUrl);
-        parsed.add(startUrl);
+        String hostName = getHostName(startUrl);
         
-        // pool of threads: workers to do work concurrently
-        Thread[] workers = new Thread[maxWorker];
-        for (int i = 0; i < maxWorker; i++) {
+        Queue<String> urlQ = new LinkedList<>();
+        HashSet<String> visUrl = new HashSet<>();
+        
+        urlQ.offer(startUrl);
+        visUrl.add(startUrl);
+        
+        Thread[] workers = new Thread[maxNumberOrWorkers];
+        ReentrantLock urlQLock = new ReentrantLock();
+        Condition urlQCdn = urlQLock.newCondition();
+        AtomicInteger idleWorkers = new AtomicInteger(0);
+        
+        for (int i = 0; i < maxNumberOrWorkers; i++) {
             int workerId = i;
-            Thread worker = new Thread(() -> work(workerId, htmlParser));
+            
+            Thread worker = new Thread(() -> work(workerId, hostName, urlQ, visUrl, urlQLock, urlQCdn, idleWorkers, htmlParser));
             workers[workerId] = worker;
             workers[workerId].start();
         }
         
-        for (int i = 0; i < maxWorker; i++) {
+        for (int i = 0; i < maxNumberOrWorkers; i++) {
+            int workerId = i;
+            
             try {
-                workers[i].join();
+                workers[workerId].join();    
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                e.printStackTrace();  
             }
         }
         
-        return new ArrayList<>(parsed);
+        return new ArrayList<>(visUrl);
     }
 }
